@@ -29,5 +29,11 @@ php artisan make:filament-resource City --generate: para crear un recurso de ciu
 -Creacion de tabla pivot (van a tener relacion con otra tabla):
  php artisan make:migration create_table_user_calendar
  php artisan make:migration create_table_user_department
+ -Creacion de alta de calendarios: php artisan make:filament-resource Calendar --generate
+ -Creacion de alta de departamentos: php artisan make:filament-resource Department
+ -Creacion del recurso de Timesheet: php artisan make:filament-resource Timesheet --generate
+
+
+- protected $guarded = [];?
 
 

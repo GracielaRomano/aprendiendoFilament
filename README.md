@@ -33,7 +33,36 @@ php artisan make:filament-resource City --generate: para crear un recurso de ciu
  -Creacion de alta de departamentos: php artisan make:filament-resource Department
  -Creacion del recurso de Timesheet: php artisan make:filament-resource Timesheet --generate
 
+-Creacion del recurso Holiday: php artisan make:filament-resource Holiday --generate
 
-- protected $guarded = [];?
+- protected $guarded = [];? Es como un comodin para que la validacion lo salte, y se puedan crear los datos sin necesidad de validar los campos. Solo se usa mientras estamos en desarrollo, para cuando estemos en produccion se debe usar en la raiz de fillable con los campos que se van a usar.
 
+Usando la documentacion de filament para cambiar estilos a los tipos de holidays: usamos el badge() y el color() para cambiar el color de los badges. Ejemplo:
+
+```
+Tables\Columns\TextColumn::make('type')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'declined' => 'danger',
+                        'approved' => 'success',
+                        'pending' => 'warning',
+                    })
+```
+-Creacion de widget de filamento para nuestro panel de dashboard. Para ello vamos a la pagina de filament y buscamos el widget que queremos usar. En este caso usamos el widget de informacion de filamento (Stats overview widgets).
+En la terminal ponemos: php artisan make:filament-widget StatsOverview --stats-overview.
+Se trabaja en el archivo StatsOverview.php. Ejemplo:
+
+```
+use Filament\Widgets\StatsOverviewWidget\Stat;
+
+protected function getStats(): array
+{
+    return [
+        Stat::make('Unique views', '192.1k'),
+        Stat::make('Bounce rate', '21%'),
+        Stat::make('Average time on page', '3:12'),
+    ];
+}
+```
+Y de esta forma agregamos tres widgets a nuestro dashboard.
 

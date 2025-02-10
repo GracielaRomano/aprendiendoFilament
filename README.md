@@ -66,3 +66,54 @@ protected function getStats(): array
 ```
 Y de esta forma agregamos tres widgets a nuestro dashboard.
 
+-Para cambiar el nombre del panel de dashboard, vamos a la carpeta Providers y en el archivo DashboardPanelProvider.php, y cambiamos el id y el path.
+
+-Creamos un nuevo panel que sera el personal de cada empleado:
+php artisan make:filament-panel. Luego en la pregunta what is the ID? ponemos el nombre del panel que queremos crear.
+
+-Creamos un recurso Holiday para el panel personal: php artisan make:filament-resource
+
+-Para que el usuario solo pueda ver sus propios datos, agregamos el siguiente codigo en el archivo CreateHoliday.php:
+
+protected function mutateFormDataBeforeCreate(array $data): array
+{
+    $data['user_id'] = auth()->id();
+ 
+    return $data;
+}
+
+Esta funcion permite rellenar los campos de user-id y tipo en el momento de enviar y crear el registro.
+
+-Creacion del recurso Timesheet en el panel personal: php artisan make:filament-resource
+
+-Para que se muestre la info solo del usuario logueado, agregamos el siguiente codigo en el archivo TimesheetResource.php y en HolidayResource.php:
+
+public static function getEloquentQuery(): Builder
+{
+    return parent::getEloquentQuery()->where('user_id', auth()->user()->id);
+}
+
+-Para crear un action(boton)en el recurso Timesheet, agregamos el siguiente codigo en el archivo ListTimesheets.php:
+
+protected function getHeaderActions(): array
+{
+    return [
+        Action::make('In work')
+        ->label('Entrar a trabajar')
+    ];
+}
+
+Para ello vamos a la pagina de la documentacion de filament en: Panel builder > getting started > Pages > header Actions.
+Luego para personalizar el boton: Actions > Advanced actions y estraemos el label.
+
+-Para crear un action que requiera confirmacion, agregamos el siguiente codigo en el archivo ListTimesheets.php:
+
+```
+->requiresConfirmation()
+```
+
+Si quiero ver si la funcion que estoy creando esta funcionando y que se muestre por pantalla mientras estoy en desrrollo agrego en el lugar que quiero verificar el siguiente codigo:
+
+```
+dd('test');
+```

@@ -11,18 +11,32 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Filters\SelectFilter;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
+
 class TimesheetResource extends Resource
 {
     protected static ?string $model = Timesheet::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-table-cells';
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view',
+            'view_any',
+            'create',
+            'update',
+            'delete',
+            'delete_any',
+        ];
+    }
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->where('user_id', Auth::user()->id);
+        return parent::getEloquentQuery()->where('user_id', Auth::user()->id)->orderBy('day_in', 'desc');
     }
     
     public static function form(Form $form): Form
@@ -88,6 +102,13 @@ class TimesheetResource extends Resource
         ->bulkActions([
             Tables\Actions\BulkActionGroup::make([
                 Tables\Actions\DeleteBulkAction::make(),
+                ExportBulkAction::make()->exports([
+                    ExcelExport::make('table')->fromTable() 
+                    ->withFilename('Timesheet_'.date('Y-m-d') .' _export'),
+                    ExcelExport::make('form')->fromForm()
+                    ->withFilename('Timesheet_'.date('Y-m-d') .' _export'),
+
+                ]),
             ]),
         ]);
     }

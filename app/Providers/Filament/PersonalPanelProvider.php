@@ -12,12 +12,17 @@ use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Widgets;
 use Filament\Notifications\Notification;
+use Filament\Navigation\MenuItem;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use pxlrbt\FilamentEnvironmentIndicator\EnvironmentIndicatorPlugin;
+
+
+
 
 class PersonalPanelProvider extends PanelProvider
 {
@@ -64,7 +69,27 @@ class PersonalPanelProvider extends PanelProvider
             ->databaseNotifications()
             ->authMiddleware([
                 Authenticate::class,
-            ]);
-            
+            ])
+            ->userMenuItems([
+                MenuItem::make()
+                    ->label('Admin')
+                    ->url('/admin')
+                    ->icon('heroicon-o-cog-6-tooth')
+                    ->visible(function (){
+                        if(auth()->user()){
+                            if(auth()->user()?->hasAnyRole([
+                                'super_admin'
+                            ])){
+                                return true;
+                            }else{
+                                return false;
+                            }
+                        }else{
+                            return false;
+                        }
+                        ;
+                    }) ,
+                // ...
+                ]);
     }
 }

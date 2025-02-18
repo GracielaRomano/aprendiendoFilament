@@ -13,7 +13,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use EightyNine\ExcelImport\ExcelImportAction;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
-
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ListTimesheets extends ListRecords
 {
@@ -126,6 +126,16 @@ class ListTimesheets extends ListRecords
             }),
             Actions\CreateAction::make(),
             ExcelImportAction::make()->color('primary')->use(MyTimesheetImport::class),
+            Action::make('createPDF')
+            ->label('Crear PDF')
+            ->color('warning')
+            ->requiresConfirmation()
+            ->url(
+                fn (): string => route('pdf.example', ['user' => Auth::user()]),
+                shouldOpenInNewTab: true
+            ),
+           
+        
         ];
     }
 }

@@ -272,3 +272,14 @@ En el archivo ListTimesheets.php, agregamos el siguiente codigo:
         ExcelImportAction::make()->color('primary')->use(MyTimesheetImport::class),
 
         Para decirle que debe importar del archivo que hayamos creado y no del que viene por defecto en el plugin.
+
+
+***Crear PFF***
+-Para poder crear pdfs, debemos instalar:
+    composer require barryvdh/laravel-dompdf
+
+NOTA: filament da un error al intentar mandar pdfs, para ello debemos crear una url.
+
+
+-Creamos un controlador para crear la url: php artisan make:controller PdfController
+
